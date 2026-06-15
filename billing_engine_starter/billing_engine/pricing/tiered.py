@@ -29,23 +29,40 @@ class Tier:
     to_units: Optional[int]   # None means "unlimited" / open-ended
     unit_price: Money
 
-
 class TieredPricing(PricingStrategy):
+    """Charges across multiple price tiers based on cumulative quantity."""
+
     def __init__(self, tiers: list[Tier]) -> None:
+        # TODO Day 1
+        if not tiers:
+            raise ValueError("Tiers must not be empty.")
+        for i in range(len(tiers)-1):
+            if tiers[i+1].from_units != tiers[i].to_units:
+                raise ValueError("Not contiguous.")
+        if tiers[-1].to_units is not None:
+            raise ValueError("Last one must be of 'None' type.")
+        currency = tiers[0].unit_price.currency
+        for c in tiers:
+            if c.unit_price.currency != currency:
+                raise ValueError("Currency must be same for everyone.")
         self.tiers = tiers
 
+
     def calculate(self, quantity: int) -> Money:
-        total = Money.zero(self.tiers[0].unit_price.currency)
-
-        for tier in self.tiers:
-            if quantity > tier.from_units:
-                if tier.to_units is None:
-                    # Open-ended tier
-                    count = quantity - tier.from_units
-                else:
-                    # Bounded tier
-                    count = min(quantity, tier.to_units) - tier.from_units
-
-                total += tier.unit_price * count
-
-        return total   # ✅ don’t forget this
+        # TODO Day 1
+        if quantity < 0:
+            raise ValueError("Quantity must not be negative.")
+        currency = self.tiers[0].unit_price.currency
+        total = Money.zero(currency)
+        for ti in self.tiers:
+            if quantity < ti.from_units:
+                break
+            if ti.to_units is None:
+                units = quantity - ti.from_units
+            elif quantity > ti.from_units:
+               units = min(quantity, ti.to_units) - ti.from_units
+            else: 
+                units = 0
+            total = total + ti.unit_price * units
+        
+        return total
