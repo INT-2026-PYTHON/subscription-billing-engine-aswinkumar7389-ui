@@ -11,11 +11,7 @@ from billing_engine.discounts.base import Discount, DiscountContext
 
 class FixedAmountDiscount(Discount):
     def __init__(self, amount: Money) -> None:
-        # Validate type
-        if not isinstance(amount, Money):
-            raise TypeError("amount must be a Money instance")
-
-        # Validate non-negative
+        # Defensive check: ensure non-negative
         if amount < Money.zero(amount.currency):
             raise ValueError("amount must be non-negative")
 
