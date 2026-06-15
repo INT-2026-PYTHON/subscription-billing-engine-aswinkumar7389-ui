@@ -13,7 +13,7 @@ class UsageBased(PricingStrategy):
 
     def __init__(self, unit_price: Money) -> None:
         # Validate unit_price is non-negative
-        if unit_price < 0:
+        if unit_price < Money.zero(unit_price.currency):
             raise ValueError("unit_price must be non-negative")
         self.unit_price = unit_price
 
@@ -21,5 +21,5 @@ class UsageBased(PricingStrategy):
         # Reject negative quantity
         if quantity < 0:
             raise ValueError("quantity must be non-negative")
-        return self.unit_price * quantity
+        return Money(self.unit_price.amount * quantity, self.unit_price.currency)
 
