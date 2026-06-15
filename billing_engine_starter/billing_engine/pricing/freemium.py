@@ -31,7 +31,7 @@ class Freemium(PricingStrategy):
             raise ValueError("quantity must be non-negative")
 
         # Get currency from inner strategy
-        currency = self.overage_strategy.calculate(1).currency
+        currency = self.overage_strategy.calculate(0).currency
 
         if quantity <= self.free_quota:
             return Money.zero(currency)
