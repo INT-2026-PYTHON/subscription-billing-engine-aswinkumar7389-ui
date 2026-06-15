@@ -54,24 +54,21 @@ class TieredPricing(PricingStrategy):
 
         self.tiers = tiers
 
-    def calculate(self, quantity: int) -> Money:
-        # Reject negative quantity
-        if quantity < 0:
-            raise ValueError("quantity must be non-negative")
+    def __init__(self, tiers: list[Tier]) -> None:
+        self.tiers = tiers
 
-        currency = self.tiers[0].unit_price.currency
-        total = Money.zero(currency)
+    def calculate(self, quantity: int) -> Money:
+        total = Money.zero(self.tiers[0].unit_price.currency)
 
         for tier in self.tiers:
-            if tier.to_units is None:
-                # Open-ended top tier
-                if quantity > tier.from_units:
+            if quantity > tier.from_units:
+                if tier.to_units is None:
+                    # Open-ended tier
                     count = quantity - tier.from_units
-                    total += tier.unit_price * count
-            else:
-                # Bounded tier
-                if quantity > tier.from_units:
+                else:
+                    # Bounded tier
                     count = min(quantity, tier.to_units) - tier.from_units
-                    total += tier.unit_price * count
 
-        return total
+                total += tier.unit_price * count
+
+        return total  
