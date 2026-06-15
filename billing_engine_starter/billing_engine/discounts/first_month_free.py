@@ -12,5 +12,8 @@ from billing_engine.discounts.base import Discount, DiscountContext
 
 class FirstMonthFree(Discount):
     def apply(self, subtotal: Money, context: DiscountContext) -> Money:
-        # TODO Day 1
-        raise NotImplementedError("Day 1: implement FirstMonthFree.apply")
+        # If it's the very first invoice, waive the entire subtotal
+        if context.invoice_count_so_far == 0:
+            return subtotal
+        # Otherwise, no discount
+        return Money.zero(subtotal.currency)
