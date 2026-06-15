@@ -31,29 +31,6 @@ class Tier:
 
 
 class TieredPricing(PricingStrategy):
-    """Charges across multiple price tiers based on cumulative quantity."""
-
-    def __init__(self, tiers: list[Tier]) -> None:
-        # Reject empty tier list
-        if not tiers:
-            raise ValueError("tiers list cannot be empty")
-
-        # Check contiguous ranges and last tier open-ended
-        for i in range(len(tiers) - 1):
-            if tiers[i + 1].from_units != tiers[i].to_units:
-                raise ValueError("tiers must be contiguous")
-        for i in range(len(tiers) - 1):
-            if tiers[i].to_units is None:
-                raise ValueError("only the last tier can have to_units=None")
-
-        # Check currency consistency
-        first_currency = tiers[0].unit_price.currency
-        for tier in tiers:
-            if tier.unit_price.currency != first_currency:
-                raise ValueError("all tiers must share the same currency")
-
-        self.tiers = tiers
-
     def __init__(self, tiers: list[Tier]) -> None:
         self.tiers = tiers
 
@@ -71,4 +48,4 @@ class TieredPricing(PricingStrategy):
 
                 total += tier.unit_price * count
 
-        return total  
+        return total   # ✅ don’t forget this
