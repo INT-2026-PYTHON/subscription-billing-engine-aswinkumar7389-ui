@@ -8,6 +8,10 @@ from .plan import Plan, PricingType, BillingPeriod
 from .subscription import Subscription, SubscriptionStatus
 from .invoice import Invoice, InvoiceStatus, InvoiceLineItem, LineItemKind
 from .ledger import LedgerEntry, LedgerDirection
+from .customer import Customer, CustomerStatus
+
+__all__ = ["Customer", "CustomerStatus"]
+
 
 __all__ = [
     "Customer",
